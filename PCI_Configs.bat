@@ -1,79 +1,68 @@
 @echo off
-set version=2.3
-REM NYC Office, implementing new techniques and strategies to conquer the world!!!!
-REM Copyright - Joseph Barcia
 
+REM PCI_Configs - Checks Windows system for PCI Compliance
+REM Copyright (C) 2014 Joseph Barcia - jbarcia.resume@gmail.com
+REM
+REM
+REM License
+REM -------
+REM This tool may be used for legal purposes only.  Users take full responsibility
+REM for any actions performed using this tool.  The author accepts no liability
+REM for damage caused by this tool.  If you do not accept these condition then
+REM you are prohibited from using this tool.
+REM
+REM In all other respects the GPL version 2 applies:
+REM
+REM This program is free software; you can redistribute it and/or modify
+REM it under the terms of the GNU General Public License version 2 as
+REM published by the Free Software Foundation.
+REM
+REM This program is distributed in the hope that it will be useful,
+REM but WITHOUT ANY WARRANTY; without even the implied warranty of
+REM MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+REM GNU General Public License for more details.
+REM
+REM You should have received a copy of the GNU General Public License along
+REM with this program; if not, write to the Free Software Foundation, Inc.,
+REM 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+REM
+REM You are encouraged to send comments, improvements or suggestions to
+REM me at jbarcia.resume@gmail.com
+REM
+REM
+REM Description
+REM -----------
+REM Auditing tool to check for PCI Compliance and the specific requirements
+REM associated with the corresponding output files.
+REM 
+REM It is intended to be run by security auditors and pentetration testers 
+REM against systems they have been engaged to assess, and also by system 
+REM admnisitrators who want to check configuration files for PCI Compliance.
+REM
+REM Ensure that you have the appropriate legal permission before running it
+REM someone else's system.
+REM
+REM
+REM Changelog
+REM ---------
+REM
+REM ------------
+set version=2.4
+REM ------------
+REM Added Active Directory password last changed
+REM Added Active Directory password never expires
+REM ------------
+REM version=2.3
+REM ------------
+REM Added Active Directory Queries - Active/Inactive/Disabled
+REM Added Logging configuration settings
+REM ------------
+REM version=2.x
+REM ------------
 REM Added Directory Structure and Requirement Numbers
 REM Added tools directory
 REM Added Patching Information
 REM Added screensaver, audit, rdp sessions
-
-
-
-
-
-
-
-
-
-
-REM   ______________________
-REM < What does the cow say? >
-REM   ----------------------
-REM          \   ^__^ 
-REM           \  (oo)\_______
-REM              (__)\       )\/\
-REM                  ||----w |
-REM                  ||     ||
-
-
-
-
-
-
-
-
-
-
-
-
-
-REM ......................................Nothing to see here move along................................................
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-REM Completly Customizable Options
-REM Location of  Script files
-REM set filedir=%USERPROFILE%\Desktop\CoalfirePCI
 
 
 REM sets file location to where the script is run from
@@ -87,7 +76,7 @@ for /f "tokens=1-4 delims=/ " %%a in ('date /t') do (set weekday=%%a& set month=
 for /f "tokens=1-3 delims=: " %%a in ('TIME /t') do (set hour=%%a& set minute=%%b& set second=%%c)
 set fdate=%year%%month%%day%-%hour%%minute%
 REM echo %fdate%
-
+SETLOCAL EnableDelayedExpansion
 REM Sets Hostname
 FOR /F "usebackq" %%i IN (`hostname`) DO SET Hostname=%%i
 
@@ -97,12 +86,7 @@ REM ****************************************************************************
 cls
 
 :Top
-echo 			  _____          ______        
-echo 			 / ___/__  ___ _/ / _(_)______ 
-echo 			/ /__/ _ \/ _ `/ / _/ / __/ -_)
-echo 			\___/\___/\_,_/_/_//_/_/  \__/ 
-echo:                              
-echo 					PCI 2.0 Audit V_%version%
+echo PCI 2.0 Audit V_%version%
 echo:
 echo:
 
@@ -121,12 +105,7 @@ echo:
 :Domain
 cls
 color 0A
-echo 			  _____          ______        
-echo 			 / ___/__  ___ _/ / _(_)______ 
-echo 			/ /__/ _ \/ _ `/ / _/ / __/ -_)
-echo 			\___/\___/\_,_/_/_//_/_/  \__/ 
-echo:                              
-echo 					PCI 2.0 Audit V_%version%
+echo PCI 2.0 Audit V_%version%
 echo:
 echo:
 echo SITE:  	%SiteName% 
@@ -134,12 +113,12 @@ echo:
 echo --------------------------------------------------
 echo Configuring the Domain Information (ex. domain.com)
 echo --------------------------------------------------
-echo Enter the Top Level Domain without the (.) (right-most label) (ex. com)
-set /p top-level-domain= : %=%
-echo:
-echo:
 echo Enter the Sub Domain without the (.) (left label) (ex. domain)
 set /p subdomain= : %=%
+echo:
+echo:
+echo Enter the Top Level Domain without the (.) (right-most label) (ex. com)
+set /p top-level-domain= : %=%
 echo:
 echo:
 echo:
@@ -167,12 +146,7 @@ REM Lets make some directories...
 
 cls
 color 0A
-echo 			  _____          ______        
-echo 			 / ___/__  ___ _/ / _(_)______ 
-echo 			/ /__/ _ \/ _ `/ / _/ / __/ -_)
-echo 			\___/\___/\_,_/_/_//_/_/  \__/ 
-echo:                              
-echo 					PCI 2.0 Audit V_%version%
+echo PCI 2.0 Audit V_%version%
 echo:
 echo:
 echo SITE:  	%SiteName% 
@@ -277,35 +251,41 @@ cd %filedir%\tools\
 	echo --------------------------------------------------
 	echo Dump of active Active Directory users
 	echo --------------------------------------------------
-@echo on
-		dsquery.exe * -filter "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))" -limit 9999999 >> "%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Active Users.txt"
-@echo off
+REM		dsquery.exe * -limit 0 -filter "(&(objectCategory=person)(objectClass=user)(!userAccountControl:1.2.840.113556.1.4.803:=2))" >"%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Active Users.txt"
+		dsquery.exe * -filter (msRTCSIP-UserEnabled=TRUE) -limit 0 -attr name samaccountname >>"%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Active Users.txt"
 echo:
-echo If this errors out, run the following:
 echo:
 	echo --------------------------------------------------
 	echo Dump of Disabled Active Directory users
 	echo --------------------------------------------------
-@echo on
-		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -disabled -limit 9999999 >> "%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Disabled Users.txt"
-@echo off
+		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -disabled -limit 0  | dsget user -display -fn -ln -samid >"%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Disabled Users.txt"
 echo:
-echo If this errors out, run the following:
-echo:	
+echo:
 	echo --------------------------------------------------
 	echo Dump of inactive Active Directory users
 	echo --------------------------------------------------
-@echo on
-		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -inactive 13 -limit 9999999 >> "%tempdir%\Req 8\8.5.5 %Hostname% Inactive Users.txt"
-@echo off
-echo:
-echo If this errors out, please run the command manually:
+		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -inactive 13 -limit 0 | dsget user -display -fn -ln -samid >"%tempdir%\Req 8\8.5.5 %Hostname% Inactive Users.txt"
 echo:
 echo:
+	echo --------------------------------------------------
+	echo Dump of users whose Password Never Expire
+	echo --------------------------------------------------
+		dsquery.exe * -limit 0 -filter "(&(objectCategory=person)(objectClass=user)(userAccountControl:1.2.840.113556.1.4.803:=65536))" -attr samaccountname name >"%tempdir%\Req 8\8.5 %Hostname% Users Password Don't Expire.txt"
 echo:
-echo --------------------------------------------------
-echo Run the extra commands if needed before continuing...
-echo --------------------------------------------------
+echo:
+	echo --------------------------------------------------
+	echo Dump of users and Their Last Password Change
+	echo --------------------------------------------------	 
+		FOR /F "skip=1 tokens=1-4 delims= " %%a IN ('Dsquery * -filter "&(objectClass=User)(objectCategory=Person)" -limit 0 -attr name pwdlastset ') DO (
+			FOR /F "tokens=3-4 delims=-( " %%w IN ('%systemroot%\system32\w32tm /ntte %%b') DO SET tmpLLTS=%%w 
+			FOR /F "tokens=3-4 delims=-( " %%x IN ('%systemroot%\system32\w32tm /ntte %%c') DO SET tmpPLT=%%x 
+			FOR /F "tokens=4-4 delims=-( " %%y IN ('%systemroot%\system32\w32tm /ntte %%b') DO SET tmpLLLTS=%%y
+			FOR /F "tokens=4-4 delims=-( " %%z IN ('%systemroot%\system32\w32tm /ntte %%c') DO SET tmpPLLT=%%z 
+			FOR /F "tokens=5-5 delims=-( " %%t IN ('%systemroot%\system32\w32tm /ntte %%b') DO SET tmpPLLLT=%%t
+		REM	echo %%a	!tmpLLTS!	!tmpPLT!	!tmpLLLTS!	!tmpPLLT!	!tmpPLLLT! >> "%tempdir%\Req 8\8.5 %Hostname% Users Last Password Changed.txt")
+		echo %%a	!tmpLLLTS! ----- !tmpPLT!	!tmpPLLT!	!tmpPLLLT! >> "%tempdir%\Req 8\8.5 %Hostname% Users Last Password Changed.txt")
+echo:
+echo:
 pause
 	echo --------------------------------------------------
 	echo  Packaging up the Files
@@ -317,7 +297,8 @@ pause
 	echo ..
 	echo ...
 	echo ....
-	echo Please upload %filedir%\Saved\%fdate%-%SiteName%-%Hostname%.7z to the Coalfire portal.
+	echo Your files are located here: 
+	echo %filedir%Saved\%fdate%-%SiteName%-%Hostname%.7z
 	pause
 	GOTO END
 	
