@@ -1,8 +1,8 @@
 @echo off
 
-REM PCI_Configs - Checks Windows system for PCI Compliance
-REM Copyright (C) 2014 Joseph Barcia - jbarcia.resume@gmail.com
-REM
+REM PCI_Configs - Checks Windows systems for PCI Compliance
+REM Copyright (C) 2014 Joseph Barcia - joseph@barcia.me
+REM https://github.com/jbarcia
 REM
 REM License
 REM -------
@@ -27,7 +27,7 @@ REM with this program; if not, write to the Free Software Foundation, Inc.,
 REM 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 REM
 REM You are encouraged to send comments, improvements or suggestions to
-REM me at jbarcia.resume@gmail.com
+REM me at joseph@barcia.me
 REM
 REM
 REM Description
@@ -258,13 +258,13 @@ echo:
 	echo --------------------------------------------------
 	echo Dump of Disabled Active Directory users
 	echo --------------------------------------------------
-		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -disabled -limit 0  | dsget user -display -fn -ln -samid >"%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Disabled Users.txt"
+		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -disabled -limit 0 >"%tempdir%\Req 8\8.5.4_6 %Hostname% Domain Disabled Users.txt"
 echo:
 echo:
 	echo --------------------------------------------------
 	echo Dump of inactive Active Directory users
 	echo --------------------------------------------------
-		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -inactive 13 -limit 0 | dsget user -display -fn -ln -samid >"%tempdir%\Req 8\8.5.5 %Hostname% Inactive Users.txt"
+		dsquery.exe user "dc=%subdomain%,dc=%top-level-domain%" -inactive 13 -limit 0 >"%tempdir%\Req 8\8.5.5 %Hostname% Inactive Users.txt"
 echo:
 echo:
 	echo --------------------------------------------------
@@ -291,14 +291,14 @@ pause
 	echo  Packaging up the Files
 	echo --------------------------------------------------
 		cd %filedir%\tools\
-		7za.exe a -t7z "%filedir%\Saved\%fdate%-%SiteName%-%Hostname%.7z" "%tempdir%\*.*" -r
+		7za.exe a -t7z "%USERPROFILE%\Desktop\%fdate%-%SiteName%-%Hostname%.7z" "%tempdir%\*.*" -r
 		rmdir "%tempdir%" /s /q
 	echo .
 	echo ..
 	echo ...
 	echo ....
 	echo Your files are located here: 
-	echo %filedir%Saved\%fdate%-%SiteName%-%Hostname%.7z
+	echo %USERPROFILE%\Desktop\%fdate%-%SiteName%-%Hostname%.7z
 	pause
 	GOTO END
 	

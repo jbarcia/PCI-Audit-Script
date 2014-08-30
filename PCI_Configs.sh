@@ -1,63 +1,56 @@
 #!/bin/bash
-version=1.3
-# NYC Office, implementing new techniques and strategies to conquer the world!!!!
-# Copyright - Joseph Barcia
 
+# PCI_Configs - Checks Linux systems for PCI Compliance
+# Copyright (C) 2014 Joseph Barcia - joseph@barcia.me
+# https://github.com/jbarcia
+#
+# License
+# -------
+# This tool may be used for legal purposes only.  Users take full responsibility
+# for any actions performed using this tool.  The author accepts no liability
+# for damage caused by this tool.  If you do not accept these condition then
+# you are prohibited from using this tool.
+#
+# In all other respects the GPL version 2 applies:
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+#
+# You are encouraged to send comments, improvements or suggestions to
+# me at joseph@barcia.me
+#
+#
+# Description
+# -----------
+# Auditing tool to check for PCI Compliance and the specific requirements
+# associated with the corresponding output files.
+# 
+# It is intended to be run by security auditors and pentetration testers 
+# against systems they have been engaged to assess, and also by system 
+# admnisitrators who want to check configuration files for PCI Compliance.
+#
+# Ensure that you have the appropriate legal permission before running it
+# someone else's system.
+#
+#
+# Changelog
+# ---------
+version=1.4
+# Added SSH Config
+# Added SSH Timeout
+# Added Share Config
+# version=1.3
 # Added Directory Structure and Requirement Numbers
-
-
-
-
-
-
-#              a8888b.
-#             d888888b.
-#             8P"YP"Y88
-#             8|o||o|88
-#             8'    .88
-#             8`._.' Y8.
-#            d/      `8b.
-#          .dP   .     Y8b.
-#         d8:'   "   `::88b.
-#        d8"           `Y88b
-#       :8P     '       :888
-#        8a.    :      _a88P
-#      ._/"Yaa_ :    .| 88P|
-#      \    YP"      `| 8P  `.
-#      /     \._____.d|    .'
-#      `--..__)888888P`._.'
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Scrolling, scrolling, scrolling...keep that mouse wheel rolling....
-
-
-
-
-
-
-
-
-
-
-
 
 # Needed Variables - DO NOT CHANGE
 # ******************************************************************************
@@ -82,6 +75,9 @@ read SiteName
 #Create a temp directory
 #If having issues creating the directory, hard code where you would like the files stored
 tempdir=$USERPROFILE/Desktop/$fdate-$SiteName-$HOSTNAME
+if [ ! -d "$USERPROFILE/Desktop" ]; then
+        mkdir "$USERPROFILE/Desktop"
+fi
 
 if [ -d "$tempdir" ]; then
 	echo *****WARNING: $tempdir already exists rename the folder to prevent data loss*****
@@ -94,6 +90,7 @@ fi
 # Lets make some directories...
 	mkdir "$tempdir/Applications"
 	mkdir "$tempdir/ScheduleJobs"
+	mkdir "$tempdir/Shares"
 	mkdir "$tempdir/Network"
 	mkdir "$tempdir/Firewall"
 	mkdir "$tempdir/Req 2"
@@ -202,7 +199,7 @@ echo  Grabbing Local Firewall Rules
 echo --------------------------------------------------
 	iptables -L >> "$tempdir/Firewall/$HOSTNAME Firewall Rules.txt"
 echo --------------------------------------------------
-echo  Grabbing Password Requirements
+echo  Grabbing Password Requi#ents
 echo --------------------------------------------------
 	cat /etc/pam.d/system-auth >> "$tempdir/Req 8/8.5 $HOSTNAME Password Conf.txt"
 	cat /etc/pam.d/common-password >> "$tempdir/Req 8/8.5 $HOSTNAME Password Conf 2.txt"
@@ -210,6 +207,12 @@ echo --------------------------------------------------
 	grep password /etc/pam.d/system-auth >> "$tempdir/Req 8/8.5 $HOSTNAME Password Settings.txt"
 	grep password /etc/pam.d/common-password >> "$tempdir/Req 8/8.5 $HOSTNAME Password Settings 2.txt"
 	grep password /etc/pam.d/system-auth >> "$tempdir/Req 8/8.5 $HOSTNAME Password Settings 3.txt"
+	cat /etc/ssh/sshd_config >> "$tempdir/Req 8/8.5 $HOSTNAME SSH Conf.txt"
+	grep ClientAliveInterval /etc/ssh/sshd_config >> "$tempdir/Req 8/8.5.15 $HOSTNAME SSH Timeout.txt"
+echo --------------------------------------------------
+echo  Grabbing Hard Drives and Network Shares
+echo --------------------------------------------------
+	cat /etc/fstab >> "$tempdir/Shares/$HOSTNAME fstab shares.txt"
 echo --------------------------------------------------
 echo  Grabbing NTP Settings
 echo --------------------------------------------------
@@ -233,7 +236,8 @@ echo .
 echo ..
 echo ...
 echo ....
-echo Please upload "$tempdir.tar.gz" to the Coalfire portal.
+echo Your files are located here:
+echo "$tempdir.tar.gz"
 read -p "Press [Enter] key to continue..."
 
 exit
