@@ -61,6 +61,11 @@ USERPROFILE=$(eval echo ~${SUDO_USER})
 
 
 clear
+echo '  _____          ______'
+echo ' / ___/__  ___ _/ / _(_)______'
+echo '/ /__/ _ \/ _ `/ / _/ / __/ -_)'
+echo '\___/\___/\_,_/_/_//_/_/  \__/'
+echo; echo;
 echo 					PCI 2.0 Audit V_$version
 echo --------------------------------------------------
 
