@@ -220,7 +220,7 @@ echo:
 	echo --------------------------------------------------
 	echo Dump of Audit Category Settings
 	echo --------------------------------------------------
-		Auditpol /get /category:* /r >> "%tempdir%\Req 10\10.2 %Hostname% Local Audit Settings.txt"
+		Auditpol /get /category:* >> "%tempdir%\Req 10\10.2 %Hostname% Local Audit Settings.txt"
 	echo --------------------------------------------------
 	echo Grabbing the Screensaver Settings
 	echo --------------------------------------------------
