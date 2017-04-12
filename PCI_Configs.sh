@@ -69,31 +69,31 @@ read SiteName
 
 #Create a temp directory
 #If having issues creating the directory, hard code where you would like the files stored
-tempdir=$USERPROFILE/Desktop/$fdate-$SiteName-$HOSTNAME
-if [ ! -d "$USERPROFILE/Desktop" ]; then
-        mkdir "$USERPROFILE/Desktop"
+rootdir=$USERPROFILE/Desktop
+tempdir=$fdate-$SiteName-$HOSTNAME
+if [ ! -d "$rootdir" ]; then
+        mkdir "$rootdir"
 fi
+
+cd $rootdir
 
 if [ -d "$tempdir" ]; then
-	echo *****WARNING: $tempdir already exists rename the folder to prevent data loss*****
+	echo *****WARNING: $rootdir/$tempdir already exists rename the folder to prevent data loss*****
+  exit 1
 fi
 
-if [ ! -d "$tempdir" ]; then
-	mkdir "$tempdir"
-fi
+mkdir "$tempdir"
 
 # Lets make some directories...
-	mkdir "$tempdir/Applications"
-	mkdir "$tempdir/ScheduleJobs"
-	mkdir "$tempdir/Shares"
-	mkdir "$tempdir/Network"
-	mkdir "$tempdir/Firewall"
-	mkdir "$tempdir/Req 2"
-	mkdir "$tempdir/Req 6"
-	mkdir "$tempdir/Req 8"
-	mkdir "$tempdir/Req 10"
-
-cd "$USERPROFILE/$filedir/"
+mkdir "$tempdir/Applications"
+mkdir "$tempdir/ScheduleJobs"
+mkdir "$tempdir/Shares"
+mkdir "$tempdir/Network"
+mkdir "$tempdir/Firewall"
+mkdir "$tempdir/Req 2"
+mkdir "$tempdir/Req 6"
+mkdir "$tempdir/Req 8"
+mkdir "$tempdir/Req 10"
 
 echo --------------------------------------------------
 echo  Grabbing Current User
@@ -232,7 +232,7 @@ echo ..
 echo ...
 echo ....
 echo Your files are located here:
-echo "$tempdir.tar.gz"
+echo "$rootdir/$tempdir.tar.gz"
 read -p "Press [Enter] key to continue..."
 
 exit
