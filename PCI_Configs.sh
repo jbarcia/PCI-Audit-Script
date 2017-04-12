@@ -54,7 +54,7 @@ version=1.4
 
 # Needed Variables - DO NOT CHANGE
 # ******************************************************************************
-fdate=`date +%m.%d.%y-%k.%M`
+fdate=`date +%m.%d.%y-%H.%M`
 # echo $fdate
 USERPROFILE=$(eval echo ~${SUDO_USER})
 # ******************************************************************************
