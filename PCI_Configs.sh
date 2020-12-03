@@ -34,9 +34,9 @@
 # -----------
 # Auditing tool to check for PCI Compliance and the specific requirements
 # associated with the corresponding output files.
-# 
-# It is intended to be run by security auditors and pentetration testers 
-# against systems they have been engaged to assess, and also by system 
+#
+# It is intended to be run by security auditors and pentetration testers
+# against systems they have been engaged to assess, and also by system
 # admnisitrators who want to check configuration files for PCI Compliance.
 #
 # Ensure that you have the appropriate legal permission before running it
@@ -168,9 +168,7 @@ echo --------------------------------------------------
 	netstat -tulpn >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services 3.txt"
 	lsof -i >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services 4.txt"
 	lsof -i :23 >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services Telnet.txt"
-	grep 23 /etc/services >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services Telnet 2.txt"
-	lsof -i :21 >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening FTP 2.txt"
-	grep 21 /etc/services >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening FTP.txt"
+	lsof -i :21 >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening FTP.txt"
 	chkconfig --list >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services 5.txt"
 	chkconfig --list | grep 3:on >> "$tempdir/Req 2/2.2.2 $HOSTNAME Listening Services 6.txt"
 echo --------------------------------------------------
@@ -215,7 +213,7 @@ echo --------------------------------------------------
 	cat /etc/xntp.conf >> "$tempdir/Req 10/10.4 $HOSTNAME ntp config 2.txt"
 echo --------------------------------------------------
 echo  Grabbing Logging Settings
-echo --------------------------------------------------	
+echo --------------------------------------------------
 	cat /etc/rsyslog.conf >> "$tempdir/Req 10/10.1 $HOSTNAME Log Settings.txt"
 	cat /etc/syslog.conf >> "$tempdir/Req 10/10.1 $HOSTNAME Log Settings 2.txt"
 	cat /etc/rsyslog.d/* >> "$tempdir/Req 10/10.1 $HOSTNAME Log Settings 3.txt"
